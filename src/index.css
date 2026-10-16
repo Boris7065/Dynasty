@@ -1,0 +1,264 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Bebas Neue", "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+
+  --color-ink: #0c0a07;
+  --color-coal: #14110a;
+  --color-smoke: #1c1810;
+  --color-line: #2b2417;
+  --color-bone: #f0e8d8;
+  --color-ash: #a3967e;
+  --color-gold: #e2a33c;
+  --color-brass: #f4c96d;
+  --color-clay: #a34a2b;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+  }
+
+  body {
+    @apply bg-ink font-body text-bone antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* ---- film grain overlay --------------------------------------------- */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  /* ---- typographic primitives ------------------------------------------- */
+  .eyebrow {
+    @apply font-body text-[11px] font-bold uppercase tracking-[0.3em] text-ash;
+  }
+
+  .h-display {
+    @apply font-display uppercase;
+    letter-spacing: 0.01em;
+  }
+
+  /* ---- buttons ------------------------------------------------------------- */
+  .btn,
+  .btn-gold,
+  .btn-line {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2.5 px-7 py-4 text-[12px] font-bold uppercase tracking-[0.18em] transition-all duration-300 select-none;
+  }
+
+  .btn .arr,
+  .btn-gold .arr,
+  .btn-line .arr {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn:hover .arr,
+  .btn-gold:hover .arr,
+  .btn-line:hover .arr {
+    transform: translateX(4px);
+  }
+
+  .btn-gold {
+    @apply bg-gold text-ink;
+  }
+  .btn-gold:hover {
+    @apply bg-brass;
+  }
+
+  .btn-line {
+    @apply border border-line text-bone;
+  }
+  .btn-line:hover {
+    @apply border-gold text-gold;
+  }
+
+  .link-under {
+    position: relative;
+  }
+  .link-under::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link-under:hover::after,
+  .link-under.active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* ---- scroll reveal --------------------------------------------------------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--rd, 0ms);
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---- hero line-mask reveal --------------------------------------------------- */
+  .mask-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+  .mask-line > span {
+    display: block;
+    transform: translateY(115%);
+    animation: rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--md, 0ms);
+  }
+
+  /* ---- slow image breathing ------------------------------------------------------ */
+  .kenburns {
+    animation: kenburns 24s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  /* ---- marquee --------------------------------------------------------------------- */
+  .marquee {
+    overflow: hidden;
+  }
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: marquee 34s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* ---- content swap (styles tabs) ----------------------------------------------------- */
+  .fade-swap {
+    animation: fadeSwap 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* ---- FAQ accordion (height animation without JS measuring) ----------------------------- */
+  .acc {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .acc.open {
+    grid-template-rows: 1fr;
+  }
+  .acc > div {
+    overflow: hidden;
+  }
+
+  /* ---- misc ------------------------------------------------------------------------------- */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .img-zoom {
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .group:hover .img-zoom {
+    transform: scale(1.045);
+  }
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.09);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fadeSwap {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- reduced motion ----------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track,
+  .kenburns,
+  .mask-line > span,
+  .fade-swap {
+    animation: none !important;
+  }
+  .mask-line > span {
+    transform: none;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .acc {
+    transition: none;
+  }
+  .img-zoom,
+  .btn .arr,
+  .btn-gold .arr,
+  .btn-line .arr,
+  .link-under::after {
+    transition: none !important;
+  }
+}
